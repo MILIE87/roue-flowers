@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi Mont Chiliad — Roue TikTok Live</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif}
+body{
+  background:
+    radial-gradient(circle at 50% 35%, rgba(95,45,170,.30), transparent 35%),
+    radial-gradient(circle at 15% 85%, rgba(0,220,255,.16), transparent 30%),
+    radial-gradient(circle at 85% 80%, rgba(255,0,100,.14), transparent 30%),
+    #080812;
+  color:white;display:flex;justify-content:center;align-items:center;padding:24px;
+}
+.app{width:min(760px,96vw);text-align:center}
+.title{
+  font-size:clamp(26px,5vw,42px);font-weight:900;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:5px;
+  text-shadow:0 0 10px #8d5cff,0 0 25px #7b35ff;
+}
+.sub{color:#aeb2d6;font-size:14px;margin-bottom:18px}
+.multi-card{
+  display:inline-flex;align-items:center;gap:12px;padding:9px 22px 11px;
+  border:1px solid rgba(255,255,255,.22);border-radius:18px;
+  background:rgba(17,17,35,.8);box-shadow:0 0 25px rgba(112,70,255,.25);
+  margin-bottom:18px
+}
+.multi-label{font-size:12px;color:#aaaed0;text-transform:uppercase;letter-spacing:1px}
+.multi{
+  font-size:34px;font-weight:900;
+  background:linear-gradient(90deg,#00f5ff,#b76cff,#ff3cac);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.wheel-wrap{
+  position:relative;width:min(610px,88vw);aspect-ratio:1;margin:0 auto;
+  filter:drop-shadow(0 0 20px rgba(122,64,255,.32));
+}
+.glow{
+  position:absolute;inset:3%;border-radius:50%;
+  background:conic-gradient(#00eaff,#8b5cff,#ff3b9d,#ffb300,#00eaff);
+  filter:blur(22px);opacity:.35;animation:pulse 2.5s infinite alternate;
+}
+@keyframes pulse{to{opacity:.55;filter:blur(30px)}}
+#wheel{
+  position:absolute;inset:0;width:100%;height:100%;
+  transform:rotate(0deg);transition:transform 4.8s cubic-bezier(.12,.78,.16,1);
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.35));
+}
+.slice{stroke:#fff;stroke-width:3}
+.slice.s2{fill:url(#g2)} .slice.s5{fill:url(#g5)} .slice.s10{fill:url(#g10)}
+.slice.plus{fill:url(#gp)} .slice.minus{fill:url(#gm)}
+.label{font-weight:900;font-size:29px;fill:#fff;text-anchor:middle;dominant-baseline:middle;
+  paint-order:stroke;stroke:rgba(0,0,0,.45);stroke-width:6px;letter-spacing:.5px}
+.pointer{
+  position:absolute;z-index:5;top:-3px;left:50%;transform:translateX(-50%);
+  width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;
+  border-top:0;border-bottom:48px solid #fff;
+  filter:drop-shadow(0 0 7px #ff3c74);
+}
+.pointer:after{
+  content:"";position:absolute;left:-12px;top:8px;border-left:12px solid transparent;
+  border-right:12px solid transparent;border-bottom:27px solid #ff3d65;
+}
+.center{
+  position:absolute;z-index:6;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:132px;height:132px;border-radius:50%;border:7px solid rgba(255,255,255,.9);
+  background:radial-gradient(circle at 35% 30%,#ff65c9,#7d32ff 55%,#26105f);
+  box-shadow:0 0 0 8px rgba(8,8,18,.55),0 0 30px #8d3cff, inset 0 0 25px rgba(255,255,255,.22);
+  color:white;font-size:20px;font-weight:1000;letter-spacing:1px;cursor:pointer;
+  transition:.15s transform,.15s filter;
+}
+.center:hover{filter:brightness(1.18);transform:translate(-50%,-50%) scale(1.04)}
+.center:active{transform:translate(-50%,-50%) scale(.97)}
+.center:disabled{cursor:not-allowed;filter:grayscale(.5);opacity:.8}
+.result{
+  min-height:62px;margin:20px auto 12px;width:min(500px,90vw);
+  border:1px solid rgba(255,255,255,.14);border-radius:18px;
+  background:linear-gradient(180deg,rgba(30,30,55,.88),rgba(14,14,28,.88));
+  display:flex;flex-direction:column;justify-content:center;
+  box-shadow:0 12px 30px rgba(0,0,0,.28);
+}
+.result .big{font-size:23px;font-weight:900}.result .small{font-size:12px;color:#aeb2d6;margin-top:3px}
+.controls{display:flex;justify-content:center;gap:10px;margin-top:10px}
+button.reset{
+  border:1px solid rgba(255,255,255,.2);background:#17172a;color:#cfd1ee;
+  padding:9px 15px;border-radius:12px;cursor:pointer;font-weight:700
+}
+.status{font-size:11px;color:#727696;margin-top:9px}
+@media(max-width:520px){
+  .center{width:104px;height:104px;font-size:16px}
+  .label{font-size:23px;stroke-width:5px}
+  .pointer{border-left-width:17px;border-right-width:17px;border-bottom-width:38px}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app" style="display:none;">
+  <div class="title">🎰 Multi Mont Chiliad</div>
+  <div class="sub">La roue des multiplicateurs & des wins</div>
+
+  <div class="multi-card">
+    <div class="multi-label">MULTI ACTUEL</div>
+    <div class="multi" id="multi">×0</div>
+  </div>
+
+  <div class="wheel-wrap">
+    <div class="glow"></div>
+    <div class="pointer"></div>
+
+    <svg id="wheel" viewBox="0 0 600 600" aria-label="Roue Multi Mont Chiliad">
+      <defs>
+        <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00ff9d"/><stop offset="1" stop-color="#00a86b"/></linearGradient>
+        <linearGradient id="g5" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd34e"/><stop offset="1" stop-color="#ff7a00"/></linearGradient>
+        <linearGradient id="g10" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff4d8d"/><stop offset="1" stop-color="#e50055"/></linearGradient>
+        <linearGradient id="gp" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00eaff"/><stop offset="1" stop-color="#1677ff"/></linearGradient>
+        <linearGradient id="gm" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b46cff"/><stop offset="1" stop-color="#6525d9"/></linearGradient>
+        <filter id="soft"><feGaussianBlur stdDeviation="2"/></filter>
+      </defs>
+      <circle cx="300" cy="300" r="285" fill="#111124" stroke="#fff" stroke-width="7"/>
+      <g id="slices"></g>
+      <circle cx="300" cy="300" r="282" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="4"/>
+    </svg>
+
+    <button class="center" id="spin">TOURNER</button>
+  </div>
+
+  <div class="result" id="result">
+    <div class="big">Prêt à tourner 🎯</div>
+    <div class="small">×2 / ×5 / ×10 ajoutent au multi • +5 / −5 utilisent le multi actuel</div>
+  </div>
+
+  <div class="controls">
+    <button class="reset" id="reset">↺ Remettre le multi à ×0</button>
+  </div>
+  <div class="status" id="status">Connexion au moteur Multi Mont Chiliad… • Flowers = 1 tour</div>
+</div>
+
+<script>
+const API='http://127.0.0.1:55002';
+const svg=document.getElementById('wheel');
+const slices=document.getElementById('slices');
+const spin=document.getElementById('spin');
+const multiEl=document.getElementById('multi');
+const result=document.getElementById('result');
+const statusEl=document.getElementById('status');
+
+const items=[
+  {label:'×2',type:'multi',value:2,cls:'s2'},
+  {label:'×5',type:'multi',value:5,cls:'s5'},
+  {label:'×10',type:'multi',value:10,cls:'s10'},
+  {label:'+5 WINS',type:'win',value:5,cls:'plus'},
+  {label:'−5 WINS',type:'win',value:-5,cls:'minus'}
+];
+
+function polar(cx,cy,r,deg){
+  const a=(deg-90)*Math.PI/180;
+  return [cx+r*Math.cos(a),cy+r*Math.sin(a)];
+}
+function sectorPath(start,end){
+  const p1=polar(300,300,278,start),p2=polar(300,300,278,end);
+  const large=end-start>180?1:0;
+  return `M 300 300 L ${p1[0]} ${p1[1]} A 278 278 0 ${large} 1 ${p2[0]} ${p2[1]} Z`;
+}
+items.forEach((it,i)=>{
+  const start=i*72, end=start+72, mid=start+36;
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d',sectorPath(start,end)); path.setAttribute('class','slice '+it.cls);
+  g.appendChild(path);
+  const [tx,ty]=polar(300,300,178,mid);
+  const text=document.createElementNS('http://www.w3.org/2000/svg','text');
+  text.setAttribute('x',tx);text.setAttribute('y',ty);text.setAttribute('class','label');
+  text.textContent=it.label;
+  g.appendChild(text); slices.appendChild(g);
+});
+
+let currentRotation=0, spinning=false, currentMulti=0;
+
+async function post(path,data){
+  try{
+    const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    return await r.json();
+  }catch(e){return null}
+}
+async function getStatus(){
+  try{
+    const r=await fetch(API+'/status',{cache:'no-store'}); const d=await r.json();
+    if(typeof d.multi==='number'){currentMulti=d.multi;multiEl.textContent='×'+currentMulti;}
+    statusEl.textContent='🟢 Moteur Multi Mont Chiliad connecté';
+  }catch(e){statusEl.textContent='🟠 Lance le programme « Multi Mont Chiliad » pour connecter la roue';}
+}
+let checkingSpin=false;
+function showWheel(){ document.getElementById('app').style.display='block'; }
+function hideWheel(){ document.getElementById('app').style.display='none'; }
+
+async function checkSpinQueue(){
+  if(spinning || checkingSpin) return;
+  checkingSpin=true;
+  try{
+    const r=await fetch(API+'/spin/status',{cache:'no-store'});
+    const d=await r.json();
+    if((d.pending||0)>0){
+      const claim=await post('/spin/claim',{});
+      if(claim && claim.claimed){ showWheel(); spinWheel(); }
+    }
+  }catch(e){}
+  checkingSpin=false;
+}
+
+getStatus();
+setInterval(getStatus,1000);
+setInterval(checkSpinQueue,250);
+
+function spinWheel(){
+  if(spinning)return;
+  spinning=true;spin.disabled=true;
+  const index=Math.floor(Math.random()*items.length);
+  const item=items[index];
+
+  // Pointer is at 0°. Center the selected sector under it.
+  const targetCenter=index*72+36;
+  const delta=(360-(targetCenter%360)+360)%360;
+  const extra=360*6 + delta;
+  currentRotation += extra;
+  svg.style.transform=`rotate(${currentRotation}deg)`;
+
+  setTimeout(async()=>{
+    let response=null;
+    if(item.type==='multi') response=await post('/multi/add',{amount:item.value});
+    else response=await post('/wins',{base:item.value});
+
+    await getStatus();
+
+    if(item.type==='multi'){
+      result.innerHTML=`<div class="big">${item.label} ajouté au multi 🚀</div><div class="small">Nouveau multi : ×${currentMulti}</div>`;
+    }else{
+      const gain=item.value*currentMulti;
+      result.innerHTML=`<div class="big">${gain>=0?'+':''}${gain} WINS ${gain>=0?'🔥':'💥'}</div><div class="small">${item.value>0?'+5':'−5'} base × multi actuel ×${currentMulti}</div>`;
+    }
+    spin.disabled=false;spinning=false;
+    setTimeout(hideWheel, 3500);
+  },4900);
+}
+
+spin.addEventListener('click',spinWheel);
+
+document.getElementById('reset').addEventListener('click',async()=>{
+  await post('/multi/reset',{});
+  currentMulti=0;multiEl.textContent='×0';
+  result.innerHTML='<div class="big">Multi remis à ×0 🔄</div><div class="small">Prêt pour un nouveau live</div>';
+});
+</script>
+</body>
+</html>
